@@ -12,8 +12,8 @@ def mlp(_):
     x = tf.placeholder(tf.float32, [None, 784])
     y_ = tf.placeholder(tf.float32, [None, 10])
 
-    w = tf.Variable(tf.truncated_normal([784, 10]))
-    b = tf.Variable(tf.truncated_normal([10]))
+    w = tf.Variable(tf.truncated_normal([784, 10], stddev=0.05))
+    b = tf.Variable(tf.truncated_normal([10], stddev=0.05))
     # w = tf.Variable(tf.zeros([784, 10]))
     # b = tf.Variable(tf.zeros([10]))
     y = tf.add(tf.matmul(x, w), b)
@@ -25,8 +25,10 @@ def mlp(_):
     with tf.Session() as sess:
         sess.run(varinit)
 
-        for _ in xrange(1000):
+        for i in xrange(1000):
             x_info, y_info = mnist.train.next_batch(100)
+            if i % 100 == 0:
+                print 'b is {}'.format(b.eval())
             sess.run(train, feed_dict={x: x_info, y_: y_info})
 
         # Test trained model

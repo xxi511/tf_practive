@@ -43,6 +43,8 @@ def main(_):
     x = tf.placeholder(tf.float32, [None, 784])
     W = tf.Variable(tf.zeros([784, 10]))  # weight
     b = tf.Variable(tf.zeros([10]))  # biases
+    # W = tf.Variable(tf.truncated_normal([784, 10]))
+    # b = tf.Variable(tf.truncated_normal([10]))
     y = tf.matmul(x, W) + b  # predict answer
 
     # Define loss and optimizer
