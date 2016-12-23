@@ -12,8 +12,10 @@ def mlp(_):
     x = tf.placeholder(tf.float32, [None, 784])
     y_ = tf.placeholder(tf.float32, [None, 10])
 
+    # accuracy is 0.91
     w = tf.Variable(tf.truncated_normal([784, 10], stddev=0.05))
     b = tf.Variable(tf.truncated_normal([10], stddev=0.05))
+    # accuracy is 0.88, WT
     # w = tf.Variable(tf.zeros([784, 10]))
     # b = tf.Variable(tf.zeros([10]))
     y = tf.add(tf.matmul(x, w), b)
