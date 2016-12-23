@@ -18,7 +18,7 @@
 """A very simple MNIST classifier.
 
 See extensive documentation at
-http://tensorflow.org/tutorials/mnist/beginners/index.md
+http://tensorflow.org/tutorials/1.mnist/beginners/index.md
 """
 from __future__ import absolute_import
 from __future__ import division
@@ -85,7 +85,7 @@ def main(_):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data',
+    parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/1.mnist/input_data',
                         help='Directory for storing input data')
     FLAGS, unparsed = parser.parse_known_args()
     tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
