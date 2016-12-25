@@ -103,3 +103,14 @@ def fully_connected(t_input, output_dim, name,
         return res
     else:
         return activation(res)
+
+def flatten(t_input):
+
+    shape = t_input.get_shape()
+    if shape.ndims != 2:
+        raise Exception('input tensor dimension 4 only'
+                        'now is {}'.format(shape.ndims))
+    tmpa = shape[1].value
+    tmpb = shape[2].value
+    tmpc = shape[3].value
+    return tf.reshape(t_input, [-1, tmpa*tmpb*tmpc])
