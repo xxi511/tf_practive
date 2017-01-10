@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import sys
+import numpy as np
 
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
@@ -33,6 +34,24 @@ def max_pool_2x2(x):
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],
                           padding='SAME')
 
+def npreshape(x):
+    b = x.reshape((-1, 7*7*64))
+    return b
+
+def npreshape_grad(op, grad):
+    x = op.inputs[0]
+    k = tf.reshape(grad, [-1, 7, 7, 64])
+    return k
+
+def py_func(func, inp, Tout, stateful=True, name=None, grad=None):
+
+    # Need to generate a unique name to avoid duplicates:
+    rnd_name = 'PyFuncGrad' + str(np.random.randint(0, 1E+8))
+
+    tf.RegisterGradient(rnd_name)(grad)  # see _MySquareGrad for grad example
+    g = tf.get_default_graph()
+    with g.gradient_override_map({"PyFunc": rnd_name}):
+        return tf.py_func(func, inp, Tout, stateful=stateful, name=name)
 
 def main(_):
     mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
@@ -52,6 +71,8 @@ def main(_):
     res_conv2 = tf.nn.relu(conv2d(res_pool1, w_conv2) + b_conv2)
     res_pool2 = max_pool_2x2(res_conv2)
     flat_pool2 = tf.reshape(res_pool2, [-1, 7*7*64])
+    # comment Line73 and uncomment Line75 to test py_func
+    # flat_pool2 = py_func(npreshape, [res_pool2], [tf.float32], grad=npreshape_grad)[0]
 
     w_fc3 = weight_init([7*7*64, 1024])
     b_fc3 = bias_init([1024])
@@ -68,7 +89,7 @@ def main(_):
     correct_predict = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_predict, tf.float32))
 
-    var_init = tf.initialize_all_variables()
+    var_init = tf.global_variables_initializer()
 
     with tf.Session() as sess:
         sess.run(var_init)
